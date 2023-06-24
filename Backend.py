@@ -1,4 +1,6 @@
 import math
+import pandas
+
 
 class Stats:
     
@@ -162,7 +164,90 @@ class Stats:
         
         self.make_group()
         self.constants()
-        
-        self.skp = round((self.f_mean() - self.f_mode()) / self.f_standard_deviation(), 2)
-        return self.skp
+        try:
+            self.skp = round((self.f_mean() - self.f_mode()) / self.f_standard_deviation(), 2)
+            return self.skp
+        except:
+            self.skp = round(3 * (self.f_mean() - self.f_median()) / self.f_standard_deviation(), 2)
+            return self.skp
     
+
+    def f_ex(self):
+        row1 = [float(a) for a in self.entr1.get().split('-')]
+        row2 = [float(a) for a in self.entr2.get().split('-')]
+        ans = 0
+        for a in range(len(row1)):
+            ans += row1[a] * row2[a]
+        return round(ans, 2)
+    
+    
+    def f_ex2(self):
+        row1 = [float(a) for a in self.entr1.get().split('-')]
+        row2 = [float(a) for a in self.entr2.get().split('-')]
+        ans = 0
+        for a in range(len(row1)):
+            ans += row1[a] ** 2 * row2[a]
+        return round(ans, 2)
+    
+    
+    def f_varx(self):
+        return round(self.f_ex2() - self.f_ex() ** 2, 2)
+    
+    
+    def f_smean(self):
+        return round(pandas.DataFrame([ float(a) for a in self.entr1.get().split('-')]).mean(), 2)
+    
+    
+    def f_smode(self):
+        return round(pandas.DataFrame([ float(a) for a in self.entr1.get().split('-')]).mode(), 2)
+    
+    
+    def f_smedian(self):
+        return round(pandas.DataFrame([ float(a) for a in self.entr1.get().split('-')]).median(), 2)
+    
+    
+    def f_sq1(self):
+        group = [float(a) for a in self.entr1.get().split('-')]
+        n = (len(group) + 1) // 4 - 1
+        return round(group[n] + 3 / 4 * (group[n +1] - group[n]), 2)
+        
+        
+    def f_sq3(self):
+        group = [float(a) for a in self.entr1.get().split('-')]
+        n = 3 * (len(group) + 1) // 4 - 1
+        return round(group[n] + 1 / 4 * (group[n +1] - group[n]), 2)
+    
+    
+    def f_sstandard_deviation(self):
+        group = pandas.DataFrame([float(a) for a in self.entr1.get().split('-')])
+        x_bar = group.mean()
+        return round(math.sqrt(sum([(float(a) - x_bar) ** 2 for a in self.entr1.get().split('-')]) / (len(group) - 1)), 2)
+    
+    
+    def f_svariance(self):
+        group_length = len([float(a) for a in self.entr1.get().split('-')])
+        b = sum([float(a) for a in self.entr1.get().split('-')]) ** 2
+        a = sum([float(a) ** 2 for a in self.entr1.get().split('-')])
+        return round(math.sqrt((a - b ** 2 / group_length) / (group_length - 1)), 2)
+    
+    
+    def f_soms(self):
+        group = pandas.DataFrame([float(a) for a in self.entr1.get().split('-')])
+        x_bar = group.mean()
+        return round(sum([abs(float(a) - x_bar) for a in self.entr1.get().split('-')]) / len(group), 2)
+    
+    
+    def f_sskp(self):
+        try:
+            return round((self.f_smean() - self.f_smode()) / self.f_sstandard_deviation(), 2)
+        except:
+            return round(3 * (self.f_smean() - self.f_smedian()) / self.f_sstandard_deviation(), 2)
+        
+        
+    def f_alpha4(self):
+        group = pandas.DataFrame([float(a) for a in self.entr1.get().split('-')])
+        x_bar = group.mean() 
+        m4 = sum([(float(a) - x_bar) ** 4 for a in self.entr1.get().split('-')])
+        return round(m4 / len(group) / (self.f_sstandard_deviation() ** 4), 2)
+
+        
